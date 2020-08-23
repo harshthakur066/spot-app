@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/great_places.dart';
 import '../widgets/image_input.dart';
 
 class AddPlaceScreen extends StatefulWidget {
@@ -10,6 +14,23 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _tiltleController = TextEditingController();
+  File _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  void _savePlace() {
+    if (_tiltleController.text.isEmpty || _pickedImage == null) {
+      return;
+    }
+    Provider.of<GreatPlaces>(context, listen: false).addPlace(
+      _tiltleController.text,
+      _pickedImage,
+    );
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,13 +51,13 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                     controller: _tiltleController,
                   ),
                   SizedBox(height: 10),
-                  ImageInput(),
+                  ImageInput(_selectImage),
                 ],
               ),
             ),
           )),
           RaisedButton.icon(
-            onPressed: () {},
+            onPressed: _savePlace,
             icon: Icon(Icons.add),
             label: Text('Add Spot'),
             elevation: 0,
