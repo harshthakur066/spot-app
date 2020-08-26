@@ -33,4 +33,19 @@ class GreatPlaces with ChangeNotifier {
       },
     );
   }
+
+  Future<void> fetchData() async {
+    final dataList = await DBHelper.getData('places');
+    _items = dataList
+        .map(
+          (e) => Place(
+            id: e['id'],
+            title: e['title'],
+            location: null,
+            image: File(e['image']),
+          ),
+        )
+        .toList();
+    notifyListeners();
+  }
 }
